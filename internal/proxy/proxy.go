@@ -2,26 +2,23 @@ package proxy
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"net/http/httputil"
+	"io"
 	"log"
+	"math/big"
 	"net"
 	"net/http"
+	"net/http/httputil"
 	"os"
+	"os/exec"
 	"os/signal"
 	"sync"
 	"syscall"
-	"math/big"
 	"time"
-
-	// "crypto/x509"
-	"os/exec"
-	"bytes"
-	"io"
-	// "encoding/pem"
 )
 
 func StartProxyServer() error  {
