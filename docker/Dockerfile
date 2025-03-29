@@ -11,7 +11,7 @@ COPY . .
 
 ENV GO111MODULE=on
 
-RUN chmod +x internal/scripts/gen_cert.sh
+RUN apk add --no-cache openssl
 
 RUN go build -o bin/main ./app/main.go
 

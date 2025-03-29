@@ -133,7 +133,14 @@ func HandleHTTPConnection(conn net.Conn, request *http.Request, tlsConfig *tls.C
 }
 
 func GenerateCertFromScript(domain string, serial *big.Int) (tls.Certificate, error) {
-	cmd := exec.Command("internal/scripts/gen_cert.sh", domain, fmt.Sprintf("%d", serial))
+	scriptPath := "internal/scripts/gen_cert.sh"
+
+	err := os.Chmod(scriptPath, 0755)
+	if err != nil {
+		return tls.Certificate{}, fmt.Errorf("failed to make script executable : %w", err)
+	}
+
+	cmd := exec.Command(scriptPath, domain, fmt.Sprintf("%d", serial))
 	
 	var certOut bytes.Buffer
 	cmd.Stdout = &certOut
