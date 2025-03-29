@@ -1,0 +1,9 @@
+services:
+  server:
+    build:
+      dockerfile: docker/Dockerfile
+      context: ..
+    container_name: mitm-proxy
+    ports:
+      - 8080:8080
+    restart: on-failure
