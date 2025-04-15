@@ -25,11 +25,6 @@ sudo update-ca-certificates
 
 ## Использование
 
-### Запуск напрямую:
-```bash
-go run cmd/proxy/main.go
-```
-
 ### Команды Docker:
 ```bash
 make docker-build  # Собрать образ

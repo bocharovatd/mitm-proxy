@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.Title}}</title>
+    <style>
+        body { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>{{.Title}}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Host</th>
+                <th>Path</th>
+                <th>Response Status</th>
+                <th>Time</th>
+                <th>Client IP</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Records}}
+            <tr>
+                <td>{{.Request.Method}}</td>
+                <td>{{.Request.Headers.Host}}</td>
+                <td>{{.Request.Path}}</td>
+                <td>{{.Response.Code}}</td>
+                <td>{{.Metadata.Timestamp.Format "2006-01-02 15:04:05"}}</td>
+                <td>{{.Metadata.ClientIP}}</td>
+                <td>
+                    <div><a href="/requests/{{.ID.Hex}}">View details</a></div>
+                    <form action="/repeat/{{.ID.Hex}}" method="POST">
+                        <button type="submit">Repeat</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</body>
+</html>
