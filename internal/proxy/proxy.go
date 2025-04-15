@@ -21,7 +21,7 @@ import (
 	"time"
 )
 
-func StartProxyServer() error  {
+func StartProxyServer() error {
 	listener, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		return err
@@ -57,7 +57,7 @@ func StartProxyServer() error  {
 				log.Println("Accept error:", err)
 				continue
 			}
-			
+
 			wg.Add(1)
 			go func(c net.Conn) {
 				defer wg.Done()
@@ -84,7 +84,7 @@ func HandleConnection(conn net.Conn) {
 }
 
 func HandleHTTPConnection(conn net.Conn, request *http.Request, tlsConfig *tls.Config) {
-	var targetConn net.Conn 
+	var targetConn net.Conn
 	var err error
 	if tlsConfig != nil {
 		targetConn, err = tls.Dial("tcp", fmt.Sprintf("%s:%s", request.Host, "443"), tlsConfig)
@@ -103,11 +103,11 @@ func HandleHTTPConnection(conn net.Conn, request *http.Request, tlsConfig *tls.C
 	request.RequestURI = ""
 
 	dump, err := httputil.DumpRequest(request, true)
-    if err != nil {
-        log.Println("Error dumping request:", err)
-    } else {
-        log.Printf("Target request:\n%s", dump)
-    }
+	if err != nil {
+		log.Println("Error dumping request:", err)
+	} else {
+		log.Printf("Target request:\n%s", dump)
+	}
 
 	err = request.Write(targetConn)
 	if err != nil {
@@ -138,10 +138,10 @@ func GenerateCertFromScript(domain string, serial *big.Int) (tls.Certificate, er
 	}
 
 	cmd := exec.Command(scriptPath, domain, fmt.Sprintf("%d", serial))
-	
+
 	var certOut bytes.Buffer
 	cmd.Stdout = &certOut
-	
+
 	if err := cmd.Run(); err != nil {
 		return tls.Certificate{}, fmt.Errorf("script execution failed: %w", err)
 	}
@@ -149,9 +149,9 @@ func GenerateCertFromScript(domain string, serial *big.Int) (tls.Certificate, er
 	certPEM := certOut.Bytes()
 
 	keyPEM, err := os.ReadFile("certs/cert.key")
-    if err != nil {
-        return tls.Certificate{}, err
-    }
+	if err != nil {
+		return tls.Certificate{}, err
+	}
 
 	tlsCert, err := tls.X509KeyPair(certPEM, keyPEM)
 
@@ -160,11 +160,11 @@ func GenerateCertFromScript(domain string, serial *big.Int) (tls.Certificate, er
 
 func HandleHTTPSConnection(conn net.Conn, request *http.Request) {
 	dump, err := httputil.DumpRequest(request, true)
-    if err != nil {
-        log.Println("Error dumping request:", err)
-    } else {
-        log.Printf("CONNECT request:\n%s", dump)
-    }
+	if err != nil {
+		log.Println("Error dumping request:", err)
+	} else {
+		log.Printf("CONNECT request:\n%s", dump)
+	}
 
 	_, err = conn.Write([]byte("HTTP/1.1 200 Connection Established\r\n\r\n"))
 	if err != nil {

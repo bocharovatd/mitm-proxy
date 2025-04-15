@@ -27,7 +27,7 @@ sudo update-ca-certificates
 
 ### Запуск напрямую:
 ```bash
-go run cmd/proxy/main.go
+go run app/main.go
 ```
 
 ### Команды Docker:
