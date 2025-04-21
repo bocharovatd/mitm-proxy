@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan Results</title>
+    <style>
+        body { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .back-link { margin-bottom: 20px; display: block; }
+        .result-box {
+            background: hsl(0, 0%, 96%);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .vulnerable {
+            color: #d33;
+            font-weight: bold;
+        }
+        .safe {
+            color: #3a3;
+        }
+    </style>
+</head>
+<body>
+    <a href="/requests" class="back-link">← Back to requests</a>
+    <h1>Scan Results</h1>
+    
+    <div class="result-box">
+        {{if len .Results}}
+            <h2 class="vulnerable">Vulnerabilities Found</h2>
+            {{range .Results}}
+                <div>{{.}}</div>
+            {{end}}
+        {{else}}
+            <h2 class="safe">No Vulnerabilities Found</h2>
+        {{end}}
+    </div>
+
+    {{if len .Details}}
+    <div class="result-box">
+        <h3>Details</h3>
+        {{range .Details}}
+            <div>{{.}}</div>
+        {{end}}
+    </div>
+    {{end}}
+</body>
+</html>

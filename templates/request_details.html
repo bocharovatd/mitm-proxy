@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.Title}}</title>
+    <style>
+        body { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section { margin-bottom: 20px; }
+        pre { background: hsl(0, 0%, 96%); padding: 10px; border-radius: 5px; }
+        .back-link { margin-bottom: 20px; display: block; }
+    </style>
+</head>
+<body>
+    <a href="/requests" class="back-link">← Все запросы</a>
+    <h1>{{.Title}}</h1>
+    <p><strong>ID:</strong> {{.Record.ID.Hex}}</p>
+    
+    <div class="section">
+        <h2>Request</h2>
+        <p><strong>Method:</strong> {{.Record.Request.Method}}</p>
+        <p><strong>Path:</strong> {{.Record.Request.Path}}</p>
+        <p><strong>Time:</strong> {{.Record.Request.CreatedAt.Format "2006-01-02 15:04:05"}}</p>
+        <p><strong>Client IP:</strong> {{.Record.Metadata.ClientIP}}</p>
+        
+        <h3>Headers:</h3>
+        <pre>{{range $key, $value := .Record.Request.Headers}}{{$key}}: {{$value}}
+{{end}}</pre>
+        
+        {{if .Record.Request.GetParams}}
+        <h3>GET Parameters:</h3>
+        <pre>{{range $key, $value := .Record.Request.GetParams}}{{$key}}: {{$value}}
+{{end}}</pre>
+        {{end}}
+
+        {{if .Record.Request.PostParams}}
+        <h3>POST Parameters:</h3>
+        <pre>{{range $key, $value := .Record.Request.PostParams}}{{$key}}: {{$value}}
+{{end}}</pre>
+        {{end}}
+    </div>
+
+    <div class="section">
+        <h2>Response</h2>
+        <p><strong>Status:</strong> {{.Record.Response.Code}} {{.Record.Response.Message}}</p>
+        <p><strong>Duration:</strong> {{.Record.Response.Duration}}</p>
+        
+        <h3>Headers:</h3>
+        <pre>{{range $key, $value := .Record.Response.Headers}}{{$key}}: {{$value}}
+{{end}}</pre>
+        
+        <h3>Body:</h3>
+        <pre>{{.Record.Response.Body}}</pre>
+    </div>
+</body>
+</html>

@@ -6,4 +6,19 @@ services:
     container_name: mitm-proxy
     ports:
       - 8080:8080
+      - 8000:8000
     restart: on-failure
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+    restart: always
+
+volumes:
+  mongo_data:
