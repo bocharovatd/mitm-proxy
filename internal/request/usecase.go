@@ -9,4 +9,5 @@ type Usecase interface {
 	GetByID(id string) (*requestEntity.RequestRecord, error)
 	GetAll() ([]*requestEntity.RequestRecord, error)
 	RepeatByID(id string) (string, error)
+	ScanByID(id string) ([]string, []string, error)
 }

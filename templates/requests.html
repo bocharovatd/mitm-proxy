@@ -35,9 +35,8 @@
                 <td>{{.Metadata.ClientIP}}</td>
                 <td>
                     <div><a href="/requests/{{.ID.Hex}}">View details</a></div>
-                    <form action="/repeat/{{.ID.Hex}}" method="POST">
-                        <button type="submit">Repeat</button>
-                    </form>
+                    <div><a href="/repeat/{{.ID.Hex}}">Repeat</a></div>
+                    <div><a href="/scan/{{.ID.Hex}}">Scan</a></div>
                 </td>
             </tr>
             {{end}}

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/bocharovatd/mitm-proxy/internal/pkg/scanner"
 	"github.com/bocharovatd/mitm-proxy/internal/request"
 	requestEntity "github.com/bocharovatd/mitm-proxy/internal/request/entity"
 )
@@ -84,4 +85,49 @@ func (usecase *RequestUsecase) RepeatByID(id string) (string, error) {
 	}
 
 	return newID, nil
+}
+
+func (usecase *RequestUsecase) ScanByID(id string) ([]string, []string, error) {
+	originalRecord, err := usecase.requestRepository.GetByID(id)
+	if err != nil {
+		return []string{}, []string{}, fmt.Errorf("failed to get original request: %v", err)
+	}
+
+	httpReq, err := originalRecord.Request.ToHTTPRequest()
+	if err != nil {
+		return []string{}, []string{}, fmt.Errorf("failed to convert to HTTP request: %v", err)
+	}
+
+	scanner := scanner.NewScanner()
+	points := scanner.ScanRequest(httpReq)
+
+	var (
+		vulnerabilities []string
+		scanErrors      []string
+		checked         = make(map[string]bool)
+	)
+
+	for _, point := range points {
+		key := point.Type + ":" + point.Name
+		if checked[key] {
+			continue
+		}
+		checked[key] = true
+
+		isVulnerable, errMsg := scanner.TestInjection(point, httpReq)
+
+		if errMsg != nil {
+			scanErrors = append(scanErrors, fmt.Sprintf("%s '%s': %s",
+				point.Type, point.Name, errMsg))
+			continue
+		}
+
+		if isVulnerable {
+			vulnerabilities = append(vulnerabilities,
+				fmt.Sprintf("%s '%s' is vulnerable to command injection",
+					point.Type, point.Name))
+		}
+	}
+
+	return vulnerabilities, scanErrors, nil
 }

@@ -76,8 +76,34 @@ func (handlers *RequestHandlers) RepeatByID(w http.ResponseWriter, r *http.Reque
 	newId, err := handlers.usecase.RepeatByID(id)
 	if err != nil {
 		log.Printf("Failed to repeat request: %v", err)
+		http.Redirect(w, r, "/requests", http.StatusSeeOther)
 		return
 	}
 
 	http.Redirect(w, r, "/requests/"+newId, http.StatusSeeOther)
+}
+
+func (handlers *RequestHandlers) ScanByID(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["requestID"]
+
+	result, details, err := handlers.usecase.ScanByID(id)
+	if err != nil {
+		log.Printf("Failed to scan request: %v", err)
+		http.Error(w, "Scan failed", http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Results []string
+		Details []string
+	}{
+		Results: result,
+		Details: details,
+	}
+
+	if err := handlers.tmpl.ExecuteTemplate(w, "scan_result.html", data); err != nil {
+		log.Printf("failed to render template: %v", err)
+		return
+	}
 }

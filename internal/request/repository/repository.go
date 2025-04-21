@@ -24,23 +24,8 @@ func NewRequestRepository(mongoClient *mongo.Client) request.Repository {
 
 func (repository *RequestRepository) Save(req *requestEntity.HTTPRequest, resp *requestEntity.HTTPResponse, clientIP string) (string, error) {
 	record := bson.M{
-		"request": bson.M{
-			"method":      req.Method,
-			"path":        req.Path,
-			"get_params":  req.GetParams,
-			"headers":     req.Headers,
-			"cookies":     req.Cookies,
-			"post_params": req.PostParams,
-			"raw_body":    req.RawBody,
-			"created_at":  req.CreatedAt,
-		},
-		"response": bson.M{
-			"code":     resp.Code,
-			"message":  resp.Message,
-			"headers":  resp.Headers,
-			"body":     resp.Body,
-			"duration": resp.Duration,
-		},
+		"request":  req,
+		"response": resp,
 		"metadata": bson.M{
 			"timestamp": time.Now(),
 			"client_ip": clientIP,
